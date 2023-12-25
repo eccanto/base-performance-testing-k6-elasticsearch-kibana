@@ -1,0 +1,3 @@
+[submodule "services/mockoon"]
+	path = services/mockoon
+	url = git@github.com:eccanto/base-mockoon-api-rest-server-mock.git
