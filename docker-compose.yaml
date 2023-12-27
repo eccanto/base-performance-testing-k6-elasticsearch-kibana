@@ -19,13 +19,22 @@ services:
             - K6_ELASTICSEARCH_INSECURE_SKIP_VERIFY=false
         volumes:
             - ./tests/stress.js:/app/script.js
-            - ./reports/:/app/reports/
-        command: run /app/script.js
+            - ./reports/:/app/reports
+            - ./services/k6/entrypoint.sh:/app/entrypoint.sh
+            - /run/docker.sock:/run/docker.sock
+        entrypoint: /app/entrypoint.sh
 
     mockoon:
-        build: ./service/mockoon
+        build: ./services/mockoon
+        profiles:
+            - env
         ports:
             - '3000:3000'
+        healthcheck:
+            test: curl -u 'test:test' localhost:3000/api/token
+            interval: 10s
+            retries: 60
+            start_period: 30s
 
     elasticsearch:
         image: elasticsearch:8.11.3

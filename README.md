@@ -39,16 +39,11 @@ that must be included in subsequent requests to access protected resources.
 
 ## Configuration
 
-1. Create [.env](./.env):
-    ```bash
-    API_ADDRESS=http://<IP>:3000  # Change <IP>, this IP must be accessible from within a runner containers.
-    API_USERNAME=test
-    API_PASSWORD=test
-    ```
-2. Setup environment (start `elasticsearch` and `kibana`):
-    ```bash
-    docker compose --profile env up --detach
-    ```
+Setup environment (start `elasticsearch`, `kibana` and `mockoon`):
+
+```bash
+docker compose --profile env up --detach
+```
 
 ## Run performance testing
 
@@ -57,12 +52,22 @@ that must be included in subsequent requests to access protected resources.
 The stress test will simulate a large number of concurrent login requests to evaluate how the system handles
 authentication under heavy load.
 
-**Parameters**
+**System parameters**
 
-* `Concurrent users`: Start with 1000 concurrent users and gradually increase.
-* `Ramp-up period`: 2 minutes, add 500 users every 30 seconds until reaching 3000 concurrent users.
-* `Test duration`: 5 minutes.
+* `normal expected utilisation`: 2000 concurrent users.
+* `maximum design capacity`: 3000 concurrent users.
 
+**Scenario parameters**
+
+* `maximum number of users`: 3600 concurrent users, 20% more than the maximum designed capacity.
+* `initial number of users`: start with 600 concurrent users and gradually increase.
+* `ramp-up period`: 2 minutes, add 500 users every 30 seconds until reaching 3000 concurrent users.
+* `test duration`: 5 minutes.
+
+**Scenario thresholds**
+
+* `HTTP errors`: HTTP errors should be less than 1%.
+* `response time`: 95% of requests should be below 500ms.
 
 #### Run
 
@@ -74,9 +79,48 @@ docker compose --profile test up --scale runner=10
 
 #### Results
 
-The k6 report files is saved in `./reports/`.
+#### Kibana report
 
-![Gatling Report](docs/images/gatling_report.png)
+Available in http://localhost:5601/app/dashboards
+
+![Kibana - k6 report](./docs/images/kibana-report.png)
+
+#### k6 reports
+
+Each runner generates a separate report:
+
+```bash
+reports
+├── runner-1
+│   ├── summary.html
+│   ├── summary.json
+│   └── summary.txt
+├── runner-2
+│   ├── summary.html
+│   ├── summary.json
+│   └── summary.txt
+...
+├── runner-9
+│   ├── summary.html
+│   ├── summary.json
+│   └── summary.txt
+└── runner-10
+    ├── summary.html
+    ├── summary.json
+    └── summary.txt
+
+11 directories, 30 files
+```
+
+For this run the result was:
+
+* All `10` runners had a higher `response time` than expected.
+
+  ![k6 summary](./docs/images/k6-summary-http-req-duration.png)
+
+* The number of `HTTP errors` is higher than `1%`` in `6` runners.
+
+  ![k6 summary](./docs/images/k6-summary-http-errors.png)
 
 ## Clean environment
 

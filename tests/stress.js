@@ -1,21 +1,23 @@
 import http from 'k6/http'
-import { check } from 'k6'
+import { check, group } from 'k6'
 import encoding from 'k6/encoding'
 
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js'
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js'
 
 export const options = {
-    vus: 1,
-    duration: '2s',
-    // stages: [
-    //     { duration: '2m', target: 100 },
-    //     ...Array.from(  // increase by 50 concurrent users every 30 seconds
-    //         { length: 6 }, (_, i) => {
-    //             return { duration: '30s', target: 150 + i * 50 }
-    //         }
-    //     ),
-    // ],
+    thresholds: {
+        http_req_failed: [ 'rate<0.01' ],
+        http_req_duration: [ 'p(95)<500' ],
+    },
+    stages: [
+        { duration: '2m', target: 60 },
+        ...Array.from(  // increase by 50 concurrent users every 30 seconds in 3 minutes
+            { length: 6 }, (_, i) => {
+                return { duration: '30s', target: 60 + (i + 1) * 50 }
+            }
+        ),
+    ],
 }
 
 export function handleSummary(data) {
@@ -29,22 +31,23 @@ export function handleSummary(data) {
 }
 
 export default function () {
-    const loginURL = `${__ENV.API_ADDRESS}/api/login`
+    let loginData
+
+    const loginURL = `${__ENV.API_ADDRESS}/api/token`
     const usersURL = `${__ENV.API_ADDRESS}/api/users`
     const encodedCredentials = encoding.b64encode(`${__ENV.API_USERNAME}:${__ENV.API_PASSWORD}`)
 
-    const loginResponse = http.get(
-        loginURL,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${encodedCredentials}`,
-            },
-        }
-    )
+    group('Authentication', () => {
+        const loginResponse = http.get(loginURL, { headers: { 'Authorization': `Basic ${encodedCredentials}` } })
+        check(loginResponse, { 'status was 200': (response) => response.status === 200 })
 
-    console.log("# response:", Object.keys(loginResponse))
-    console.log("# response.json:", loginResponse.json)
+        loginData = JSON.parse(loginResponse.body)
+    })
 
-    check(loginResponse, { 'status was 200': (r) => r.status === 200 })
+    if (loginData) {
+        group('Get users', () => {
+            const usersResponse = http.get(usersURL, { headers: { 'Authorization': `JWT ${loginData.access}` } })
+            check(usersResponse, { 'status was 200': (response) => response.status === 200 })
+        })
+    }
 }
