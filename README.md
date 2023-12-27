@@ -13,6 +13,12 @@
   * [Configuration](#configuration)
   * [Run performance testing](#run-performance-testing)
     * [Stress testing](#stress-testing)
+  * [Results](#results)
+    * [Kibana dashboard](#kibana-dashboard)
+    * [k6 reports](#k6-reports)
+        * [summary.html](#summary.html)
+        * [summary.json](#summary.json)
+        * [summary.txt](#summary.txt)
   * [Clean environment](#crean-environment)
 * [License](#license)
 
@@ -77,17 +83,17 @@ Run stress testing using k6 docker containers (with `10` runners):
 docker compose --profile test up --scale runner=10
 ```
 
-#### Results
+## Results
 
-#### Kibana report
+### Kibana dashboard
 
 Available in http://localhost:5601/app/dashboards
 
-![Kibana - k6 report](./docs/images/kibana-report.png)
+![kibana dashboard](./docs/images/kibana-report.png)
 
-#### k6 reports
+### k6 reports
 
-Each runner generates a separate report:
+Each runner generates a separate reports:
 
 ```bash
 reports
@@ -112,15 +118,17 @@ reports
 11 directories, 30 files
 ```
 
-For this run the result was:
+#### summary.html
 
-* All `10` runners had a higher `response time` than expected.
+![k6 HTML report](./docs/images/k6-summary-html.png)
 
-  ![k6 summary](./docs/images/k6-summary-http-req-duration.png)
+#### summary.json
 
-* The number of `HTTP errors` is higher than `1%`` in `6` runners.
+![k6 JSON report](./docs/images/k6-summary-json.png)
 
-  ![k6 summary](./docs/images/k6-summary-http-errors.png)
+#### summary.txt
+
+![k6 txt report](./docs/images/k6-summary-txt.png)
 
 ## Clean environment
 
