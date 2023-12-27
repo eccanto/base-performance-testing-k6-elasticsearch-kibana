@@ -7,7 +7,7 @@
 # Table of contents
 
 * [Overview](#overview)
-  * [Scenario: User login with JWT authentication](#scenario:-user-login-with-jwt-authentication)
+  * [Scenario: User login with JWT authentication](#scenario-user-login-with-jwt-authentication)
 * [Get started](#get-started)
   * [Requirements](#requirements)
   * [Configuration](#configuration)
@@ -16,9 +16,9 @@
   * [Results](#results)
     * [Kibana dashboard](#kibana-dashboard)
     * [k6 reports](#k6-reports)
-        * [summary.html](#summary.html)
-        * [summary.json](#summary.json)
-        * [summary.txt](#summary.txt)
+        * [summary.html](#summaryhtml)
+        * [summary.json](#summaryjson)
+        * [summary.txt](#summarytxt)
   * [Clean environment](#crean-environment)
 * [License](#license)
 
