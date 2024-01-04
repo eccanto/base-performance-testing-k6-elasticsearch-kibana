@@ -91,7 +91,7 @@ Run load testing with `10` runners:
   docker compose --profile test up --scale runner=10
   ```
 
-### Result
+#### Result
 
 ![Load testing result](./docs/images/kibana-report-load-testing.png)
 
@@ -115,7 +115,7 @@ Run stress testing with `10` runners:
   docker compose --profile test up --scale runner=10
   ```
 
-### Result
+#### Result
 
 ![Stress testing result](./docs/images/kibana-report-stress-testing.png)
 
@@ -137,7 +137,7 @@ Run soak testing with `10` runners:
   docker compose --profile test up --scale runner=10
   ```
 
-### Result
+#### Result
 
 ![Soak testing result](./docs/images/kibana-report-soak-testing.png)
 
@@ -164,7 +164,7 @@ Run spike testing with `10` runners:
   docker compose --profile test up --scale runner=10
   ```
 
-### Result
+#### Result
 
 ![Spike testing result](./docs/images/kibana-report-spike-testing.png)
 
