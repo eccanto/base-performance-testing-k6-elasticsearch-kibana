@@ -1,4 +1,4 @@
-# Performance testing using K6 + Elasticsearch + Kibana
+# Performance testing using K6 + Elasticsearch + Kibana + Docker compose
 
 ![](https://img.shields.io/badge/-Linux-grey?logo=linux)
 ![](https://img.shields.io/badge/license-MIT-green)
@@ -6,7 +6,7 @@
 
 This project is an example of the different types of performance tests that are described in
 [Performance testing summary](https://github.com/eccanto/base-performance-testing-documentation) using k6,
-Elasticsearch, Kibana and docker compose.
+Elasticsearch, Kibana and Docker compose.
 
 # Table of contents
 
