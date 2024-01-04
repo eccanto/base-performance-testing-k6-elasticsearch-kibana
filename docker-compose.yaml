@@ -18,7 +18,7 @@ services:
             - K6_ELASTICSEARCH_PASSWORD=password
             - K6_ELASTICSEARCH_INSECURE_SKIP_VERIFY=false
         volumes:
-            - ./tests/stress.js:/app/script.js
+            - ./tests/:/app/tests
             - ./reports/:/app/reports
             - ./services/k6/entrypoint.sh:/app/entrypoint.sh
             - /run/docker.sock:/run/docker.sock
