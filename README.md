@@ -66,6 +66,8 @@ docker compose --profile test up --scale runner=10
 
 ### Implementation of "Case 2: Stress testing"
 
+#### Run
+
 Set `K6_SCRIPT=tests/stress.js` in `.env` file:
 
 ```bash
