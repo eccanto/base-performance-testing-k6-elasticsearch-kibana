@@ -74,7 +74,7 @@ Set `K6_SCRIPT=tests/stress.js` in `.env` file:
 sed -i 's/\(K6_SCRIPT=\).\+/\1tests\/stress.js/' .env
 ```
 
-Run load testing with `10` runners:
+Run stress testing with `10` runners:
 
 ```bash
 docker compose --profile test up --scale runner=10
@@ -94,7 +94,7 @@ Set `K6_SCRIPT=tests/soak.js` in `.env` file:
 sed -i 's/\(K6_SCRIPT=\).\+/\1tests\/soak.js/' .env
 ```
 
-Run load testing with `10` runners:
+Run soak testing with `10` runners:
 
 ```bash
 docker compose --profile test up --scale runner=10
@@ -114,7 +114,7 @@ Set `K6_SCRIPT=tests/spike.js` in `.env` file:
 sed -i 's/\(K6_SCRIPT=\).\+/\1tests\/spike.js/' .env
 ```
 
-Run load testing with `10` runners:
+Run spike testing with `10` runners:
 
 ```bash
 docker compose --profile test up --scale runner=10
