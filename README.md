@@ -10,16 +10,14 @@ Elasticsearch, Kibana and Docker compose.
 
 # Table of contents
 
-* [Overview](#overview)
-  * [Scenario: User login with JWT authentication](#scenario-user-login-with-jwt-authentication)
 * [Get started](#get-started)
   * [Requirements](#requirements)
   * [Configuration](#configuration)
   * [Run performance testing](#run-performance-testing)
-    * [Load testing](#load-testing)
-    * [Stress testing](#stress-testing)
-    * [Soak testing](#soak-testing)
-    * [Spike testing](#spike-testing)
+    * [Implementation of "Case 1: Load testing"](#implementation-of-case-1-load-testing)
+    * [Implementation of "Case 2: Stress testing"](#implementation-of-case-2-stress-testing)
+    * [Implementation of "Case 3: Soak testing"](#implementation-of-case-3-soak-testing)
+    * [Implementation of "Case 4: Spike testing"](#implementation-of-case-4-spike-testing)
   * [Results](#results)
     * [Kibana dashboard](#kibana-dashboard)
     * [k6 reports](#k6-reports)
@@ -28,30 +26,6 @@ Elasticsearch, Kibana and Docker compose.
         * [summary.txt](#summarytxt)
   * [Clean environment](#crean-environment)
 * [License](#license)
-
-# Overview
-
-## Scenario: User login with JWT authentication
-
-The system allows users to log in using JWT for authentication. Upon successful login, the system issues a JWT token
-that must be included in subsequent requests to access protected resources.
-
-**Test scenario**
-
-* Simulate concurrent user login attempts.
-* Each login attempt includes a valid username and password.
-* Upon successful login, the system issues a JWT token.
-* The token must be included in subsequent requests for accessing protected resources.
-
-**System parameters**
-
-* **Normal design capacity**: 2000 concurrent users.
-* **Maximum design capacity**: 3000 concurrent users.
-
-**Scenario thresholds**
-
-* **HTTP errors**: HTTP errors should be less than 1%.
-* **Response time**: 95% of requests should be below 500ms.
 
 # Get Started
 
@@ -70,99 +44,79 @@ docker compose --profile env up --detach
 
 ## Run performance testing
 
-### Load testing
-
-**Scenario parameters**
-
-* **Maximum number of users**: 2400 concurrent users, 20% more than the normal design capacity.
-* **Ramp-up period**: 1.5 minute, add 400 users every 15 seconds until reaching 2400 concurrent users.
-* **Maximum number of users**: 2 minutes, keep the number of users constant at 2400
-* **Ramp-down period**: 1.5 minutes, reduce 400 users every 30 seconds until reaching 0 concurrent users.
-* **Test duration**: 5 minutes.
+### Implementation of "Case 1: Load testing"
 
 #### Run
 
+Set `K6_SCRIPT=tests/load.js` in `.env` file:
+
+```bash
+sed -i 's/\(K6_SCRIPT=\).\+/\1tests\/load.js/' .env
+```
+
 Run load testing with `10` runners:
 
-1. Change `K6_SCRIPT` variable in `.env` file to `K6_SCRIPT=./tests/load.js`.
-2. Start load testing:
-
-  ```bash
-  docker compose --profile test up --scale runner=10
-  ```
+```bash
+docker compose --profile test up --scale runner=10
+```
 
 #### Result
 
 ![Load testing result](./docs/images/kibana-report-load-testing.png)
 
-### Stress testing
+### Implementation of "Case 2: Stress testing"
 
-**Scenario parameters**
+Set `K6_SCRIPT=tests/stress.js` in `.env` file:
 
-* **maximum number of users**: 3600 concurrent users, 20% more than the maximum designed capacity.
-* **initial number of users**: 2 minutes, start with 600 concurrent users and gradually increase.
-* **ramp-up period**: 3 minutes, add 500 users every 30 seconds until reaching 3600 concurrent users.
-* **test duration**: 5 minutes.
+```bash
+sed -i 's/\(K6_SCRIPT=\).\+/\1tests\/stress.js/' .env
+```
 
-#### Run
+Run load testing with `10` runners:
 
-Run stress testing with `10` runners:
-
-1. Change `K6_SCRIPT` variable in `.env` file to `K6_SCRIPT=./tests/stress.js`.
-2. Start load testing:
-
-  ```bash
-  docker compose --profile test up --scale runner=10
-  ```
+```bash
+docker compose --profile test up --scale runner=10
+```
 
 #### Result
 
 ![Stress testing result](./docs/images/kibana-report-stress-testing.png)
 
-### Soak testing
-
-**Scenario parameters**
-
-* **number of users**: 2200 concurrent users, 10% more than the normal design capacity.
-* **test duration**: 24 hours.
+### Implementation of "Case 3: Soak testing"
 
 #### Run
 
-Run soak testing with `10` runners:
+Set `K6_SCRIPT=tests/soak.js` in `.env` file:
 
-1. Change `K6_SCRIPT` variable in `.env` file to `K6_SCRIPT=./tests/soak.js`.
-2. Start load testing:
+```bash
+sed -i 's/\(K6_SCRIPT=\).\+/\1tests\/soak.js/' .env
+```
 
-  ```bash
-  docker compose --profile test up --scale runner=10
-  ```
+Run load testing with `10` runners:
+
+```bash
+docker compose --profile test up --scale runner=10
+```
 
 #### Result
 
 ![Soak testing result](./docs/images/kibana-report-soak-testing.png)
 
-### Spike testing
-
-**Scenario parameters**
-
-* `test duration`: ~5 minutes.
-* `number of spikes`: 2 spikes of 3600 concurrent users, 20% more than the maximum designed capacity.
-* `initial number of users`: 1 minute 30 seconds, start with 2000 concurrent users.
-* `first spike`: 1 second, add 1600 to reach 3600 concurrent users.
-* `intermediate number of users`: 2 minutes, decrease to 2000 concurrent users.
-* `second spike`: 1 second, add 1600 to reach 3600 concurrent users.
-* `final number of users`: 1 minute 30 seconds, decrease to 2000 concurrent users.
+### Implementation of "Case 4: Spike testing"
 
 #### Run
 
-Run spike testing with `10` runners:
+Set `K6_SCRIPT=tests/spike.js` in `.env` file:
 
-1. Change `K6_SCRIPT` variable in `.env` file to `K6_SCRIPT=./tests/spike.js`.
-2. Start load testing:
+```bash
+sed -i 's/\(K6_SCRIPT=\).\+/\1tests\/spike.js/' .env
+```
 
-  ```bash
-  docker compose --profile test up --scale runner=10
-  ```
+Run load testing with `10` runners:
+
+```bash
+docker compose --profile test up --scale runner=10
+```
 
 #### Result
 
