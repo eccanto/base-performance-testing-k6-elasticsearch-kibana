@@ -11,12 +11,7 @@ export const options = {
         http_req_duration: [ 'p(95)<500' ],
     },
     stages: [
-        { duration: '2m', target: 60 },
-        ...Array.from(  // increase by 50 concurrent users every 30 seconds in 3 minutes
-            { length: 6 }, (_, i) => {
-                return { duration: '30s', target: 60 + (i + 1) * 50 }
-            }
-        ),
+        { duration: '5m', target: 360 },
     ],
 }
 

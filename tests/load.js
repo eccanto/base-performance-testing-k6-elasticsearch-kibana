@@ -11,19 +11,15 @@ export const options = {
         http_req_duration: [ 'p(95)<500' ],
     },
     stages: [
-        ...Array.from(
-            { length: 6 }, (_, i) => {
-                return { duration: '15s', target: (i + 1) * 40 }
-            }
-        ),
         {
-            duration: '2m', target: 240
+            duration: '1m30s', target: 240,
         },
-        ...Array.from(
-            { length: 6 }, (_, i) => {
-                return { duration: '15s', target: (6 - (i + 1)) * 40 }
-            }
-        ),
+        {
+            duration: '2m', target: 240,
+        },
+        {
+            duration: '1m30s', target: 0,
+        },
     ],
 }
 
